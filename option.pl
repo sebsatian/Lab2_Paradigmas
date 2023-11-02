@@ -6,6 +6,6 @@ option(Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave, Etiqu
     number(InitialFlowCodeLink),
     is_list(PalabrasClave),
     Etiqueta = [Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave].
-
+%agregar selectores?
 % Hecho
 option(2, "2 - estudiar", 4, 3, ["aprender", "perfeccionarme"], O2)
