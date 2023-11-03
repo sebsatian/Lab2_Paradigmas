@@ -1,11 +1,17 @@
+% Constructor TDA option
+% option/6
+% Dominio: int code, string message, int chatbotCodeLink, int initialFlowCodeLink, list palabrasClave
+
 % Constructor
-option(Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave, Etiqueta) :-
-    number(Code),
+option(Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave, Option) :-
+
     string(Message),
-    number(ChatbotCodeLink),
-    number(InitialFlowCodeLink),
+    integer(ChatbotCodeLink),
+    integer(InitialFlowCodeLink),
     is_list(PalabrasClave),
-    Etiqueta = [Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave].
-%agregar selectores?
-% Hecho
-option(2, "2 - estudiar", 4, 3, ["aprender", "perfeccionarme"], O2)
+    % Construir la opción.
+    Option = [Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave].
+
+% Pertenencia
+isOption(Option) :-
+    Option = [Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave].
