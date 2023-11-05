@@ -1,41 +1,26 @@
+:- include('option.pl').
+
 % Constructor TDA Flow
 % flow/4
 % Dominio: int id, string nameMsg, list of Option options, list of Flow flow
 
 % Constructor
-flow(Id, NameMsg, Options, Flow) :-
-    integer(Id),
-    string(NameMsg),
-    is_list(Options),
-    % Verificar que el Id del flujo sea único
-    \+ flow(Id, _, _, _),
-    % Verificar que las opciones no se repitan en base a su id
-    verifyUniqueOptions(Options),
-    % Construir el flujo
-    Flow = [Id, NameMsg, Options].
+% TDA flow
+flow(Id, Names, OptionsEntry, [Id, NamesMsg, OptionsNoDuplicates]):- 
+    addUnique(OptionsEntry, [], OptionsNoDuplicates, []).
 
-% Verificar que las opciones no se repitan en base a su id
-verifyUniqueOptions([]).
-verifyUniqueOptions([Option|Options]) :-
-    \+ member(Option, Options),
-    verifyUniqueOption% Constructor TDA Flow
-% flow/4
-% Dominio: int id, string nameMsg, list of Option options, list of Flow flow
+isInList(Elemento, [Elemento|_]).
+isInList(Elemento, [_|Resto]):- 
+    isInList(Elemento, Resto).
 
-% Constructor
-flow(Id, NameMsg, Options, Flow) :-
-    integer(Id),
-    string(NameMsg),
-    is_list(Options),
-    % Verificar que el Id del flujo sea único
-    \+ flow(Id, _, _, _),
-    % Verificar que las opciones no se repitan en base a su id
-    verifyUniqueOptions(Options),
-    % Construir el flujo
-    Flow = [Id, NameMsg, Options].
+isNotInList(Elemento, List):- 
+    \+ isInList(Elemento, List).
 
-% Verificar que las opciones no se repitan en base a su id
-verifyUniqueOptions([]).
-verifyUniqueOptions([Option|Options]) :-
-    \+ member(Option, Options),
-    verifyUniqueOption
+% Caso base: lista de opciones vacía.
+addUnique([], ListaAcum, ListaAcum, _).
+
+% Recursión: opciones NO duplicadas
+addUnique([OptionToAdd|RestToAdd], ListaAcum, OutputList, Codes) :- 
+    getOptionCode(OptionToAdd, Code),
+    isNotInList(Code, Codes), 
+    addUnique(RestToAdd, [OptionToAdd|ListaAcum], OutputList, [Code|Codes]).

@@ -12,6 +12,6 @@ option(Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave, Optio
     % Construir la opción.
     Option = [Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave].
 
-% Pertenencia
-isOption(Option) :-
-    Option = [Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave].
+% Selectores
+getOptionCode(Option, Code):- 
+    option(Code, _, _, _, _, Option).
