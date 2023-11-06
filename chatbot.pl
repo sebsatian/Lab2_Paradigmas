@@ -22,12 +22,6 @@ uniqueFlowIds([Flow|Rest]) :-
     % Recursivamente verifica el resto de la lista.
     uniqueFlowIds(Rest).
 
-
-% flowIdInList/2 verifica si un ID de flujo se encuentra en una lista de flujos.
-flowIdInList(FlowID, Flows) :-
-    % Verifica si algún flujo en la lista tiene el mismo ID.
-    isInList([FlowID|_], Flows).
-
 % chatbotAddFlow/3
 % Predicado modificador para añadir flujos a un chatbot asegurándose de que no haya duplicados.
 chatbotAddFlow(Chatbot, Flow, NewChatbot) :-
@@ -37,8 +31,8 @@ chatbotAddFlow(Chatbot, Flow, NewChatbot) :-
     % Obtener el ID del flujo a añadir.
     Flow = [FlowID|_],
 
-    % Verificar que el ID del flujo no está ya en la lista de flujos del chatbot.
-    \+ flowIdInList(FlowID, Flows),
+    % Verificar que el ID del flujo no está ya en la lista de flujos del chatbot utilizando isInList.
+    \+ isInList([FlowID|_], Flows),
     
     % Añadir el flujo al final de la lista de flujos de manera recursiva.
     addFlowToEnd(Flows, Flow, NewFlows),
@@ -46,7 +40,12 @@ chatbotAddFlow(Chatbot, Flow, NewChatbot) :-
     % Crear el nuevo chatbot con la lista de flujos actualizada.
     NewChatbot = [ChatbotID, Name, WelcomeMessage, StartFlowId, NewFlows].
 
-% flowIdInList/2 verifica si un ID de flujo se encuentra en una lista de flujos.
-flowIdInList(FlowID, Flows) :-
-    % Verifica si algún flujo en la lista tiene el mismo ID.
-    isInList([FlowID|_], Flows).
+% addFlowToEnd/3
+% Añade un flujo al final de la lista de flujos de manera recursiva.
+addFlowToEnd(Flows, Flow, [Flow]) :- 
+    % Caso base: si no hay mas flujos, simplemente se devuelve la lista con el flujo añadido.
+    Flows = [].
+
+% Caso recursivo: se añade la cabeza a la nueva lista y se continúa con el resto.
+addFlowToEnd([Head|Tail], Flow, [Head|NewTail]) :-
+    addFlowToEnd(Tail, Flow, NewTail).
