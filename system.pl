@@ -123,9 +123,9 @@ systemLogout(System, Username, NewSystem) :-
     % Crear el nuevo sistema con la lista de usuarios actualizada.
     NewSystem = [SystemName, InitialChatbotCodeLink, Chatbots, UpdatedUsers].
 
-% updateUserStatus/4
+% updateUserStatusOut/4
 % Actualiza el estado de sesión de un usuario en la lista de usuarios.
-updateUserStatus([], _, _, []) :- fail. % Falla si la lista está vacía o el usuario no se encuentra.
-updateUserStatus([[Username, ChatHistory, logged]|Rest], Username, notLogged, [[Username, ChatHistory, notLogged]|Rest]).
-updateUserStatus([User|Users], Username, NewStatus, [User|UpdatedUsers]) :-
-    updateUserStatus(Users, Username, NewStatus, UpdatedUsers).
+updateUserStatusOut([], _, _, []) :- fail. % Falla si la lista está vacía o el usuario no se encuentra.
+updateUserStatusOut([[Username, ChatHistory, logged]|Rest], Username, notLogged, [[Username, ChatHistory, notLogged]|Rest]).
+updateUserStatusOut([User|Users], Username, NewStatus, [User|UpdatedUsers]) :-
+    updateUserStatusOut(Users, Username, NewStatus, UpdatedUsers).
