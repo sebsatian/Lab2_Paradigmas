@@ -1,9 +1,3 @@
-:- include('chatbot.pl').
-:- include('option.pl').
-:- include('flow.pl').
-:- include('user.pl').
-:- include('chatHistory.pl').
-
 % Constructor TDA system
 % system/4
 % Dominio: name (string), initialChatbotCodeLink (int), chatbots (list of chatbot), system
@@ -22,69 +16,57 @@ uniqueChatbotIds([]).
 uniqueChatbotIds([Chatbot|Rest]) :-
     % Asume que el primer elemento de cada chatbot es su ID.
     Chatbot = [ChatbotID|_],
-    % Verifica que el ChatbotID no está en el resto de la lista de chatbots utilizando isNotInList.
-    isNotInList(ChatbotID, Rest),
-    % Recursivamente verifica el resto de la lista.
+    % Verifica que el ChatbotID no está en el resto de la lista de chatbots utilizando \+ member.
+    \+ member(ChatbotID, Rest),
+    % Recursivamente verifica el resto de la lista.     
     uniqueChatbotIds(Rest).
 
 % systemAddChatbot/3   
 % Modificador para añadir chatbots a un sistema asegurándose de que no haya duplicados.
 systemAddChatbot(System, Chatbot, NewSystem) :-
     % Descomponer System para obtener los componentes actuales.
-    System = [SystemName, InitialChatbotCodeLink, Chatbots],
+    System = [SystemName, InitialChatbotCodeLink, Chatbots, Users],
     
     % Obtener el ID del chatbot a añadir.
     Chatbot = [ChatbotID|_],
 
-    % Verificar que el ID del chatbot no está ya en la lista de chatbots del sistema.
-    isNotInList(ChatbotID, Chatbots),
+    % Crear una lista con todos los IDs de los chatbots existentes.
+    findall(ID, (member(CB, Chatbots), nth0(0, CB, ID)), IDs),
+
+    % Verificar que el ID del chatbot no está ya en la lista de IDs.
+    \+ member(ChatbotID, IDs),
     
     % Añadir el chatbot al final de la lista de chatbots.
     append(Chatbots, [Chatbot], NewChatbots),
     
     % Crear el nuevo sistema con la lista de chatbots actualizada.
-    NewSystem = [SystemName, InitialChatbotCodeLink, NewChatbots].
+    NewSystem = [SystemName, InitialChatbotCodeLink, NewChatbots, Users].
+
 
 % systemAddUser/3
 % Modificador para añadir usuarios a un sistema asegurándose de que no haya duplicados.
+
 systemAddUser(System, Username, NewSystem) :-
-    % Descomponer System para obtener los componentes actuales.
+    % Descompone System para obtener los componentes actuales.
     System = [SystemName, InitialChatbotCodeLink, Chatbots, Users],
-
     % Verificar que el nombre de usuario no está ya en la lista de usuarios del sistema.
-    isNotInList([Username, _], Users),
-    
-    % Crear el nuevo usuario utilizando el constructor de TDA user.
-    user(Username, [], NewUser),  % Asegúrate de que el chatHistory se inicializa como una lista vacía.
-
-    % Añadir el usuario al final de la lista de usuarios.
+    % Si el usuario ya existe, el predicado fallará y retornará false.
+    \+ userExists(Users, Username),
+    % Utiliza el constructor de user para crear el nuevo TDA usuario.
+    user(Username, NewUser),
+    % Añadir el nuevo usuario al final de la lista de usuarios.
     append(Users, [NewUser], NewUsers),
-    
     % Crear el nuevo sistema con la lista de usuarios actualizada.
     NewSystem = [SystemName, InitialChatbotCodeLink, Chatbots, NewUsers].
 
-% Función member implementada, caso base.
-% Verifica si un elemento está en la cabeza de la lista.
-isInList(Elemento, [Elemento|_]).
-
-% Función member implementada, caso recursivo.
-% Verifica si un elemento está en el resto de la lista.
-isInList(Elemento, [_|Resto]):- 
-    isInList(Elemento, Resto).
-
-% Función member implementada con negación.
-% Verifica y devuelve true cuando un elemento NO está en la lista.
-isNotInList(Elemento, List):- 
-    \+ isInList(Elemento, List).
-
-% systemLogin/3
 % Predicado para iniciar sesión de un usuario en el sistema.
+% systemLogin/3
 systemLogin(System, Username, NewSystem) :-
-    % Descomponer System para obtener los componentes actuales.
+    % Descompone System para obtener los componentes actuales.
     System = [SystemName, InitialChatbotCodeLink, Chatbots, Users],
 
-    % Verificar que el usuario existe y su estado de sesión es 'notLogged'.
-    isInList([Username, _, notLogged], Users),
+    % Verifica que el usuario existe y su estado de sesión es 'notLogged'.
+    member([Username, _, notLogged], Users),
 
     % Verificar que ningún otro usuario está logueado.
     \+ anyUserLogged(Users),
@@ -98,7 +80,7 @@ systemLogin(System, Username, NewSystem) :-
 % anyUserLogged/1
 % Verifica si algún usuario en la lista de usuarios está logueado.
 anyUserLogged(Users) :-
-    isInList([_, _, logged], Users).
+    member([_, _, logged], Users).
 
 % updateUserStatus/4
 % Actualiza el estado de sesión de un usuario en la lista de usuarios.
@@ -108,18 +90,18 @@ updateUserStatus([User|Users], Username, NewStatus, [User|UpdatedUsers]) :-
     updateUserStatus(Users, Username, NewStatus, UpdatedUsers).
 
 
-% systemLogout/3
-% Predicado para cerrar la sesión de un usuario en el sistema.
-systemLogout(System, Username, NewSystem) :-
+% systemLogout/2
+% Predicado para cerrar la sesión del usuario actualmente logueado en el sistema.
+systemLogout(System, NewSystem) :-
     % Descomponer System para obtener los componentes actuales.
     System = [SystemName, InitialChatbotCodeLink, Chatbots, Users],
-
-    % Verificar que el usuario está logueado.
-    isInList([Username, _, logged], Users),
-
-    % Actualizar el estado de sesión del usuario a 'notLogged'.
-    updateUserStatus(Users, Username, notLogged, UpdatedUsers),
-
+    
+    % Encontrar el usuario que está logueado.
+    member([Username, _, logged], Users),
+    
+    % Crear una nueva lista de usuarios con el usuario logueado ahora no logueado.
+    updateUserStatusOut(Users, Username, notLogged, UpdatedUsers),
+    
     % Crear el nuevo sistema con la lista de usuarios actualizada.
     NewSystem = [SystemName, InitialChatbotCodeLink, Chatbots, UpdatedUsers].
 
@@ -127,5 +109,6 @@ systemLogout(System, Username, NewSystem) :-
 % Actualiza el estado de sesión de un usuario en la lista de usuarios.
 updateUserStatusOut([], _, _, []) :- fail. % Falla si la lista está vacía o el usuario no se encuentra.
 updateUserStatusOut([[Username, ChatHistory, logged]|Rest], Username, notLogged, [[Username, ChatHistory, notLogged]|Rest]).
-updateUserStatusOut([User|Users], Username, NewStatus, [User|UpdatedUsers]) :-
-    updateUserStatusOut(Users, Username, NewStatus, UpdatedUsers).
+updateUserStatusOut([UserInfo|Users], Username, Status, [UserInfo|UpdatedUsers]) :-
+    % Continúa buscando en el resto de la lista si el primer usuario no es el correcto.
+    updateUserStatusOut(Users, Username, Status, UpdatedUsers).

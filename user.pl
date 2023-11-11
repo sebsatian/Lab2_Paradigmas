@@ -2,7 +2,11 @@
 % user/2
 % Dominio: username (string), user
 
-% Constructor de TDA user
-user(Username, User) :-
-    % Inicializa el usuario con un nombre de usuario, un historial de chat vacío y un estado de sesión no logueado.
-    User = [Username, [], notLogged].  % El chatHistory se inicializa como una lista vacía y el estado de sesión como no logueado.
+% Constructor TDA user
+% se inicializa el usuario con su username, una lista vacia para el chatHistory y el estado de sesion.
+user(Username, [Username, [], notLogged]).
+
+% Verifica si un nombre de usuario ya existe en la lista de usuarios.
+% Verifica si un nombre de usuario ya existe en la lista de usuarios.
+userExists(Users, Username) :-
+    member([Username, _, _], Users).

@@ -13,5 +13,6 @@ option(Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave, Optio
     Option = [Code, Message, ChatbotCodeLink, InitialFlowCodeLink, PalabrasClave].
 
 % Selectores
-getOptionCode(Option, Code):- 
-    option(Code, _, _, _, _, Option).
+% Extrae el código de una opción. Asumimos que la opción está representada como una lista,
+% y el código es el primer elemento de esa lista.
+getOptionCode([Code|_], Code).

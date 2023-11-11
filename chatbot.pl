@@ -1,6 +1,3 @@
-:- include('option.pl').
-:- include('flow.pl').  
-
 % Constructor TDA chatbot
 % chatbot/5
 % Dominio: int ChatbotID, string Name, string WelcomeMessage, int StartFlowId, list Flows
@@ -18,26 +15,26 @@ uniqueFlowIds([Flow|Rest]) :-
     % Asume que el primer elemento de cada flujo es su ID.
     Flow = [FlowID|_],
     % Verifica que el FlowID no está en el resto de la lista de flujos.
-    isNotInList(FlowID, Rest),
+    \+ member(FlowID, Rest),
     % Recursivamente verifica el resto de la lista.
     uniqueFlowIds(Rest).
 
 % chatbotAddFlow/3
 % Predicado modificador para añadir flujos a un chatbot asegurándose de que no haya duplicados.
 chatbotAddFlow(Chatbot, Flow, NewChatbot) :-
-    % Descomponer Chatbot para obtener los componentes actuales.
+    % Descompone Chatbot para obtener los componentes actuales.
     Chatbot = [ChatbotID, Name, WelcomeMessage, StartFlowId, Flows],
     
-    % Obtener el ID del flujo a añadir.
+    % Obtiene el ID del flujo a añadir.
     Flow = [FlowID|_],
 
-    % Verificar que el ID del flujo no está ya en la lista de flujos del chatbot utilizando isInList.
-    \+ isInList([FlowID|_], Flows),
+    % Verifica que el ID del flujo no está ya en la lista de flujos del chatbot utilizando member.
+    \+ member([FlowID|_], Flows),
     
-    % Añadir el flujo al final de la lista de flujos de manera recursiva.
+    % Añade el flujo al final de la lista de flujos de manera recursiva.
     addFlowToEnd(Flows, Flow, NewFlows),
     
-    % Crear el nuevo chatbot con la lista de flujos actualizada.
+    % Crea el nuevo chatbot con la lista de flujos actualizada.
     NewChatbot = [ChatbotID, Name, WelcomeMessage, StartFlowId, NewFlows].
 
 % addFlowToEnd/3
