@@ -1,0 +1,50 @@
+Autoevaluación Lab 1 Paradigmas de Programación, Sebastián Paillao Espíndola, 20937236-3
+
+
+1. (0.5 pts) TDAs: Los TDAs son creados, implementados y asociados de manera correcta.
+1 BIEN
+	TDAs creados:
+	-option
+	-system
+	-flow
+	-chatHistory
+	-user
+	-chatbot
+
+2. (0.2 pts) TDA option - constructor: Funcion creada y funcional el 100% de las veces
+1 Bien
+
+3. (0.5 pts) TDA flow - constructor: Funcion creada y funcional el 100% de las veces
+1 Bien
+
+4. (0.2 pts) TDA flow - flowAddOption: Funcion creada y funcional el 100% de las veces
+1 Bien
+
+5. (0.4 pts) TDA chatbot - constructor: Funcion creada y funcional el 100% de las veces
+1 Bien
+
+6. (0.3 pts) TDA chatbot - chatbotAddFlow: Funcion creada y funcional el 100% de las veces
+1 Bien
+
+7. (0.4 pts) TDA system - constructor: Funcion creada y funcional el 100% de las veces
+1 Bien
+
+8. (0.2 pts) TDA system - systemAddChatbot: Funcion creada y funcional el 100% de las veces
+1 Bien
+
+9. (0.3 pts) TDA system - systemAddUser: Funcion creada y funcional el 100% de las veces
+1 Bien
+
+10. (0.3 pts) TDA system - systemLogin: Funcion creada y funcional el 100% de las veces
+1 Bien
+
+11. (0.2 pts) TDA system - systemLogOut: Funcion creada y funcional el 100% de las veces
+1 Bien
+
+12. (1 pt) TDA system - systemTalkRec: Funcion creada y no funcional.
+0.25
+
+12. (0.8 pt) TDA system - systemSynthesis: Funcion creada y no funcional.
+0.25
+
+
